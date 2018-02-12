@@ -1,6 +1,6 @@
 #!/bin/bash
-# Last update: December 20th, 2017
-# Author Michael Beach
+# Last update: Ferbuari 12 2018
+# Created By Rahim
 
 ## Ensure distro kernel and grub2 are installed first
 yum install -y kernel grub2
