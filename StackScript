@@ -1,0 +1,34 @@
+#!/bin/bash
+# Last update: December 20th, 2017
+# Author Michael Beach
+
+## Ensure distro kernel and grub2 are installed first
+yum install -y kernel grub2
+sed -i -e "s/GRUB_TIMEOUT=5/GRUB_TIMEOUT=10/" /etc/default/grub
+sed -i -e "s/crashkernel=auto rhgb console=ttyS0,19200n8/console=ttyS0,19200n8/" /etc/default/grub
+mkdir /boot/grub
+grub2-mkconfig -o /boot/grub/grub.cfg
+
+## Disable firewall
+systemctl stop firewalld.service
+systemctl disable firewalld.service
+
+## Disable NetworkManager
+# See https://documentation.cpanel.net/display/ALD/Installation+Guide+-+System+Requirements
+# for the requirement to disable NetworkManager
+
+systemctl stop NetworkManager
+systemctl disable NetworkManager
+systemctl enable network
+systemctl start network
+
+#Cpanel suggests removing networkmanager just in case.
+yum remove NetworkManager -y
+
+## Start installation
+cd /home \
+  && curl -o latest -L https://securedownloads.cpanel.net/latest \
+  && sh latest
+
+## Queue reboot
+(sleep 5 && reboot) &
